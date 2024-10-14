@@ -35,6 +35,8 @@ dependencies {
 	testImplementation 'org.springframework.security:spring-security-test'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 	implementation 'org.springframework.cloud:spring-cloud-starter-openfeign:4.1.0'
+	implementation "com.discord4j:discord4j-core:3.2.6"
+	implementation 'net.dv8tion:JDA:5.0.0-beta.5'
 }
 
 tasks.named('test') {
