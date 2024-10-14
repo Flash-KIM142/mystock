@@ -3,38 +3,44 @@ package com.example.mystock.message;
 import com.example.mystock.stock.AlphaVantageClient;
 import com.example.mystock.stock.StockResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import net.dv8tion.jda.api.JDA;
+import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Map;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class MessageScheduler {
 
-    private final DiscordClient discordClient;
     private final AlphaVantageClient alphaVantageClient;
+    private final JDA jda;
 
-    @Scheduled(cron = "0 30 18 * * MON-SUN", zone = "Asia/Seoul")
+    @Value("${discord.channel.id}")
+    private String channelId;
+
+    @Scheduled(cron = "0 0 6 * * TUE-SAT", zone = "Asia/Seoul")
     public void sendDailyMessage() {
         List<String> stockSymbols = List.of("AAPL", "GOOGL");
         String interval = "5min";
-        for(String symbol : stockSymbols) {
-            StockResponse stockResponse = alphaVantageClient.getStock("TIME_SERIES_INTRADAY", symbol, interval,
-                    "${alphavantage.api.key}");
 
-            DiscordMessageEmbedDto embed = DiscordMessageEmbedDto.builder()
-                    .title(symbol + " Stock Summary")
-                    .description(stockResponse.buildLatestDailyStockDescription())
-                    .build();
+        TextChannel textChannel = jda.getTextChannelById(channelId);
 
-            DiscordMessageDto message = DiscordMessageDto.builder()
-                    .content("Daily stock summary for " + symbol)
-                    .embeds(List.of(embed))
-                    .build();
+        if(textChannel != null) {
+            for(String symbol : stockSymbols) {
+                StockResponse stockResponse = alphaVantageClient.getStock("TIME_SERIES_INTRADAY", symbol, interval,
+                        "${alphavantage.api.key}");
 
-            discordClient.sendMessage(message);
+                String stockMessage = "Daily stock summary for " + symbol + ":\n" + stockResponse.buildLatestDailyStockDescription();
+                textChannel.sendMessage(stockMessage).queue();
+            }
+        }
+        else {
+            System.out.println("TextChannel not found for ID: " + channelId);
         }
     }
 }

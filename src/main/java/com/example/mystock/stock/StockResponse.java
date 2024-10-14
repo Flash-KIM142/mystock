@@ -2,10 +2,12 @@ package com.example.mystock.stock;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.Map;
 
 @Getter
+@Slf4j
 public class StockResponse {
 
     @JsonProperty("Meta Data")
@@ -36,11 +38,17 @@ public class StockResponse {
     }
 
     public String buildLatestDailyStockDescription() {
+        if (timeSeries == null || timeSeries.isEmpty()) {
+            log.error("TimeSeries data is null or empty");
+            return "No stock data available at the moment.";
+        }
+
+        log.info("TimeSeries keys: " + timeSeries.keySet());
         String latestDate = timeSeries.keySet().stream().max(String::compareTo).orElseThrow();
         StockData stockData = timeSeries.get(latestDate);
 
-        return String.format("Open: %s\nHigh: %s\nLow: %s\nClose: %s\nVolume: %s",
-                stockData.getOpen(), stockData.getHigh(), stockData.getLow(),
-                stockData.getClose(), stockData.getVolume());
+        return String.format("Time: %s\nOpen: %s\nHigh: %s\nLow: %s\nClose: %s\nVolume: %s",
+                latestDate, stockData.getOpen(), stockData.getHigh(),
+                stockData.getLow(), stockData.getClose(), stockData.getVolume());
     }
 }
