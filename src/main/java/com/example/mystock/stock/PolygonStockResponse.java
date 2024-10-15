@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
+import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -21,17 +22,22 @@ public class PolygonStockResponse {
     @Getter
     public static class Result {
         @JsonProperty("v")
-        private double v;
+        private BigDecimal v;
         @JsonProperty("o")
-        private double o;
+        private BigDecimal o;
         @JsonProperty("c")
-        private double c;
+        private BigDecimal c;
         @JsonProperty("h")
-        private double h;
+        private BigDecimal h;
         @JsonProperty("l")
-        private double l;
+        private BigDecimal l;
         @JsonProperty("t")
         private long t;
+    }
+
+    public BigDecimal getPrevClose() {
+        Result prev = results.get(0);
+        return prev.c;
     }
 
     public String getPrevStockDescription() {
