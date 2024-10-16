@@ -1,9 +1,12 @@
 package com.example.mystock.message;
 
+import com.example.mystock.message.enums.MessageFormat;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import org.checkerframework.checker.units.qual.A;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -26,13 +29,14 @@ public class MessageJudge {
     }
 
     public MessageTypeAndContent judge(String message) {
+        List<String> helpMessages = MessageFormat.getHelpMessage();
         if(message == null || message.isEmpty()) {
-            return new MessageTypeAndContent(MessageType.UNKNOWN, "", List.of());
+            return new MessageTypeAndContent(MessageType.UNKNOWN, "", helpMessages);
         }
 
         String[] splits = message.split("\n", 2);
         if(splits.length < 2 || splits[1].isEmpty()) {
-            return new MessageTypeAndContent(MessageType.UNKNOWN, "", List.of());
+            return new MessageTypeAndContent(MessageType.UNKNOWN, "", helpMessages);
         }
 
         List<String> content = Arrays.asList(splits[1].split(","));
