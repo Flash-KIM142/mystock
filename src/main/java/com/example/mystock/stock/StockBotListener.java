@@ -1,6 +1,7 @@
 package com.example.mystock.stock;
 
 import com.example.mystock.message.MessageJudge;
+import com.example.mystock.message.enums.MessageFormat;
 import com.example.mystock.stock.model.request.WalletRequestDto;
 import com.example.mystock.stock.service.FavoriteService;
 import com.example.mystock.stock.service.WalletService;
@@ -36,6 +37,10 @@ public class StockBotListener extends ListenerAdapter {
         MessageJudge.MessageTypeAndContent messageTypeAndContent = messageJudge.judge(message);
         if(messageTypeAndContent.getMessageType()== MessageJudge.MessageType.UNKNOWN) {
             event.getChannel().sendMessage("Invalid Message. Please send the message in given format.").queue();
+            // send help message for guide of desirable format
+            for(String helpMessage: messageTypeAndContent.getContent()) {
+                event.getChannel().sendMessage(helpMessage).queue();
+            }
             return;
         }
 
