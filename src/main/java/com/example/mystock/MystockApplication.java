@@ -26,7 +26,7 @@ public class MystockApplication {
 
 	@Bean
 	public JDA jda(DiscordBotToken discordBotToken, StockBotListener stockBotListener) throws Exception {
-		String token = discordBotToken.getDiscordBotToken();
+		String token = discordBotToken.discordBotToken;
 
 		return JDABuilder.createDefault(token)
 				.setActivity(Activity.playing("waiting for a message..."))

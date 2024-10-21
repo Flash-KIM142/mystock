@@ -48,11 +48,12 @@ public class StockBotListener extends ListenerAdapter {
         log.info("Message Type {}", messageTypeAndContent.getMessageType());
         log.info("ticker {}", ticker);
         PolygonStockResponse polygonStockResponse = polygonClient.getPrevStock(ticker, polygonApiKey);
+        log.info("polygonStockResponse {}", polygonStockResponse);
         String prevStockDescription = polygonStockResponse.getPrevStockDescription();
         String responseMessage;
         switch (messageTypeAndContent.getMessageType()) {
             case ADD_OWN_STOCK -> {
-                responseMessage = walletService.save(WalletRequestDto.of(messageTypeAndContent.getContent()),
+                responseMessage = walletService.save(WalletRequestDto.Companion.of(messageTypeAndContent.getContent()),
                         polygonStockResponse.getPrevClose());
                 event.getChannel().sendMessage(responseMessage).queue();
             }
