@@ -6,6 +6,8 @@ import com.example.mystock.stock.repository.FavoriteRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class FavoriteService {
@@ -17,5 +19,9 @@ public class FavoriteService {
         Favorite favorite = Favorite.of(ticker);
         favoriteRepository.save(favorite);
         return messageBuilder.addFavStock(ticker, prevClose);
+    }
+
+    public List<Favorite> getAll() {
+        return favoriteRepository.findAll();
     }
 }
